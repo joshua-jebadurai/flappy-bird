@@ -6,7 +6,6 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private float jumpForce = 1.4f;
 
-
     private Rigidbody2D rb;
 
     private void Awake()
@@ -25,8 +24,18 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("Has collided");
+        Debug.Log("GameOver");
         // GameOver
+    }
+
+    private void OnDisable()
+    {
+        // Dereference
+    }
+
+    private void OnDestroy()
+    {
+        
     }
 
 }
