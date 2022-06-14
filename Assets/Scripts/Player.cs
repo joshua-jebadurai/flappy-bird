@@ -24,18 +24,16 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("GameOver");
-        // GameOver
+        // This will show how many subscribers are there for this event.
+        Debug.Log("Subscribers: " + OnPlayerBumped.GetInvocationList().Length);
+
+        // checking if there are subscribers for this event.
+        if (OnPlayerBumped != null)
+            OnPlayerBumped(); // executing all the callbacks registered
     }
 
-    private void OnDisable()
-    {
-        // Dereference
-    }
-
-    private void OnDestroy()
-    {
-        
-    }
+ 
+    public delegate void PlayerBumpedHandler();
+    public static event PlayerBumpedHandler OnPlayerBumped; // Think of this as an array of callbacks
 
 }

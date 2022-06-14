@@ -20,7 +20,10 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(SpawnPipe());
+        // Without using it.
+        // Without using InvokeRepeat.
+        // Try to use Update
+        //StartCoroutine(SpawnPipe());
     }
 
     private IEnumerator SpawnPipe ()
@@ -46,12 +49,61 @@ public class GameManager : MonoBehaviour
         instance = this;
     }
 
+    private void OnEnable()
+    {
+        Player.OnPlayerBumped += Player_OnPlayerBumped;
+        Debug.Log("GameManager enabled");
+    }
+
+    private void OnDisable()
+    {
+        Player.OnPlayerBumped -= Player_OnPlayerBumped;
+        Debug.Log("GameManager disabled");
+    }
+
+    private void Player_OnPlayerBumped()
+    {
+        // Paused the game
+        Time.timeScale = 0;
+    }
+
     [SerializeField] private int score = 0;
 
     // Object memeber method
     public void Scored ()
     {
         score++;
-        UIManager.instance.UpdateScore(score);
+        // If there are subscribers
+        if (OnScoreUpdated != null)
+        {
+            OnScoreUpdated(score);
+        }
+        //UIManager.instance.UpdateScore(score);
     }
+
+    private float pipeSpawnDelta;
+    private void Update()
+    {
+        PipeSpawnUpdate();
+    }
+
+    private void PipeSpawnUpdate ()
+    {
+        pipeSpawnDelta += Time.deltaTime;
+
+        if (pipeSpawnDelta > pipeSpawnInterval)
+        {
+            Instantiate(pipePrefab, new Vector3(3, 0, 0), Quaternion.identity);
+            pipeSpawnDelta = 0;
+        }
+    }
+
+    public delegate void ScoreHandler(int score);
+    public static event ScoreHandler OnScoreUpdated;
+
+    // The one that's firing the event
+    // Subscribers.
+
+    // I want to have a GameOver event to happen here.
+    // optional by the way, try to create an game state system. Tips: enums.
 }
