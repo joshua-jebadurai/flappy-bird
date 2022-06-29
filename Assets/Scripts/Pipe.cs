@@ -14,8 +14,27 @@ public class Pipe : MonoBehaviour
         Destroy(gameObject, timeToDestroy);
     }
 
+    private void OnEnable()
+    {
+        GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+    }
+
+    private GameState gameState;
+    private void GameManager_OnGameStateChanged(GameState gameState)
+    {
+        this.gameState = gameState;
+    }
+
     private void Update()
     {
+        if (gameState == GameState.GAME_OVER || gameState == GameState.PAUSED)
+            return;
+
         transform.Translate(-transform.right * speed * Time.deltaTime);
         // Checking the position and destroying it - One way of doing it.
     }

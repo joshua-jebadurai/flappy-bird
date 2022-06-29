@@ -13,9 +13,29 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
+    /*private void OnEnable()
+    {
+        GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+    }
+
+    private GameState gameState;
+    private void GameManager_OnGameStateChanged(GameState gameState)
+    {
+        this.gameState = gameState;
+    }*/
+
     // FPS
     private void Update()
     {
+        var gameState = GameManager.GetGameState();
+        if (gameState == GameState.GAME_OVER || gameState == GameState.PAUSED)
+            return;
+
         if (Input.GetMouseButtonDown(0))
         {
             rb.velocity = transform.up * jumpForce;

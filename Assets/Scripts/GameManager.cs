@@ -52,19 +52,20 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         Player.OnPlayerBumped += Player_OnPlayerBumped;
-        Debug.Log("GameManager enabled");
+        
     }
 
     private void OnDisable()
     {
         Player.OnPlayerBumped -= Player_OnPlayerBumped;
-        Debug.Log("GameManager disabled");
+    
     }
 
     private void Player_OnPlayerBumped()
     {
         // Paused the game
-        Time.timeScale = 0;
+        //Time.timeScale = 0;
+        SetGameState(GameState.GAME_OVER);
     }
 
     [SerializeField] private int score = 0;
@@ -89,6 +90,9 @@ public class GameManager : MonoBehaviour
 
     private void PipeSpawnUpdate ()
     {
+        if (gameState == GameState.GAME_OVER || gameState == GameState.PAUSED)
+            return;
+
         pipeSpawnDelta += Time.deltaTime;
 
         if (pipeSpawnDelta > pipeSpawnInterval)
@@ -106,4 +110,37 @@ public class GameManager : MonoBehaviour
 
     // I want to have a GameOver event to happen here.
     // optional by the way, try to create an game state system. Tips: enums.
+
+
+    // GameStates => Main Menu, Game, GameOver, Pause
+    // MENU STATES (UI)=> Main, Bird Selection, Options
+    // Character Animation State => Idle, Jumping, Running, Walking, Dead
+
+    [SerializeField] private GameState gameState = GameState.IN_GAME;
+
+    // Property
+    public static GameState GetGameState ()
+    {
+        return instance.gameState;
+    }
+
+    public static void SetGameState (GameState gameState)
+    {
+        instance.gameState = gameState;
+
+        // Firing an event to all the subscribers
+        if (OnGameStateChanged != null)
+            OnGameStateChanged(gameState);
+    }
+
+    public delegate void GameStateHandler(GameState gameState);
+    public static event GameStateHandler OnGameStateChanged;
+}
+
+public enum GameState
+{
+    MENU = 0,
+    IN_GAME = 1,
+    GAME_OVER = 2,
+    PAUSED = 3
 }
