@@ -239,6 +239,7 @@ MonoBehaviour:
   pipePrefab: {fileID: 8243005589124688347, guid: 94579bf603ee8416392fb93e2cb38053, type: 3}
   pipeSpawnInterval: 2
   score: 0
+  gameState: 1
 --- !u!4 &650213509
 Transform:
   m_ObjectHideFlags: 0
@@ -421,7 +422,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!95 &1475111322
 Animator:
   serializedVersion: 4

@@ -11,12 +11,19 @@ public class Pipe : MonoBehaviour
     private void Start()
     {
         // Write me a better solution than this.
-        Destroy(gameObject, timeToDestroy);
+        //Destroy(gameObject, timeToDestroy);
+    }
+
+    private IEnumerator DestroyAfterSomeTime ()
+    {
+        yield return new WaitForSeconds(timeToDestroy);
+        gameObject.SetActive(false);
     }
 
     private void OnEnable()
     {
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+        StartCoroutine(DestroyAfterSomeTime());
     }
 
     private void OnDisable()
@@ -41,7 +48,6 @@ public class Pipe : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("Score increase");
         GameManager.instance.Scored();
     }
 }

@@ -18,6 +18,36 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject pipePrefab;
     [SerializeField] private float pipeSpawnInterval = 2;
 
+    private List<GameObject> pipePool = new List<GameObject>();
+
+    private GameObject GetPipe ()
+    {
+        // Go through the list and find out which pipe is inactive.
+        for (int i = 0; i < pipePool.Count; i++)
+        {
+            
+            if (!pipePool[i].activeSelf)
+            {
+                pipePool[i].SetActive(true);
+                return pipePool[i];
+            }
+        }
+
+        // if there are no pipes inactive in the pool then create a new one.
+        GameObject newPipe = Instantiate(pipePrefab, new Vector3(3, 0, 0), Quaternion.identity);
+        pipePool.Add(newPipe);
+
+        return newPipe;
+    }
+
+
+    // optional for now, we will use this once we write our own abstract object pooling system
+    public void ReturnPipe (GameObject usedPipe)
+    {
+        // or you can use this instead of destroy.
+        usedPipe.SetActive(false);
+    }
+
     private void Start()
     {
         // Without using it.
@@ -26,12 +56,16 @@ public class GameManager : MonoBehaviour
         //StartCoroutine(SpawnPipe());
     }
 
+    // Not using this anymore.
     private IEnumerator SpawnPipe ()
     {
         while (true)
         {
             yield return new WaitForSeconds(pipeSpawnInterval);
-            Instantiate(pipePrefab, new Vector3(3, 0, 0), Quaternion.identity);
+            GameObject pipe = GetPipe();
+            pipe.SetActive(true);
+            pipe.transform.position = new Vector3(3, 0, 0);
+            //Instantiate(pipePrefab, new Vector3(3, 0, 0), Quaternion.identity);
         }
     }
 
@@ -97,7 +131,9 @@ public class GameManager : MonoBehaviour
 
         if (pipeSpawnDelta > pipeSpawnInterval)
         {
-            Instantiate(pipePrefab, new Vector3(3, 0, 0), Quaternion.identity);
+            GameObject pipe = GetPipe();
+            pipe.transform.position = new Vector3(3, 0, 0);
+            //Instantiate(pipePrefab, new Vector3(3, 0, 0), Quaternion.identity);
             pipeSpawnDelta = 0;
         }
     }
